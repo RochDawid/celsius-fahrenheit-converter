@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Celsius to Fahrenheit converter</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./assets/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./assets/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./assets/favicon-16x16.png"
+    />
+    <link rel="manifest" href="./assets/site.webmanifest" />
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.20.0/dist/tf.min.js"></script>
+    <script type="text/javascript">
+      let model = null;
+      (async () => {
+        model = await tf.loadLayersModel("model/model.json");
+      })();
+      function changeCelsius() {
+        let celsius = document.getElementById("celsius").value;
+        let tensor = tf.tensor1d([parseInt(celsius)]);
+        let prediction = Math.round(model.predict(tensor).dataSync());
+        document.getElementById("label-celsius").innerHTML =
+          "<h3>" + celsius + "° C</h3>";
+        document.getElementById("result").innerHTML =
+          "<h3>" + prediction + "F</h3>";
+      }
+    </script>
+    <style>
+      main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="container">
+      <h2>ML powered Celsius to Fahrenheit converter 🚀</h2>
+      <p>
+        That means that what you see here is not getting calculated by the
+        analytical formula for the convertion; it's a simple neural net that
+        after some iterations has developed the ability to 'guess' the correct
+        value 😃
+      </p>
+    </header>
+    <main class="container">
+      <span id="label-celsius"></span>
+      <input
+        type="range"
+        id="celsius"
+        min="-200"
+        max="200"
+        oninput="changeCelsius()"
+      />
+      <span id="result"></span>
+    </main>
+  </body>
+</html>
